@@ -1,0 +1,24 @@
+{
+  "name": "filesystem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fileSystem.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node filesystem"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boazber1/fileSystemProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boazber1/fileSystemProject/issues"
+  },
+  "homepage": "https://github.com/boazber1/fileSystemProject#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.5"
+  }
+}
