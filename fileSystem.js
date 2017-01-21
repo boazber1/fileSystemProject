@@ -2,10 +2,10 @@
  * Created by Boaz on 19/01/2017.
  */
 const readlineSync = require('readline-sync');
-var exit = false;
-var uniqueID = 0;
-var path = 'root:/';
-var level = 0;//level distance from root
+var exit = false;//global variable to control the exit command
+var uniqueID = 0;// an ID of each file in the storage
+var path = 'root >';
+var level = 0;// level distance from root folder
 
 var storage = [//basic folder system
     /*[id, parentID , whatAmI?, content===NULL]*/
@@ -30,7 +30,6 @@ var menu = [//user menu
     ' Exit(suit yourself out from the program)'
 ];
 
-//console.log(fsStorage[0][2] + " >");
     console.log(path);
 while (!exit){
 
@@ -67,7 +66,7 @@ while (!exit){
                 }
             }
 
-            function exitProgram() {
+            function exitProgram() {// exit the program safely using the process object
                 var exitProgram = readlineSync.question("Are you sure you want to exit? (y / n)");
                 if(exitProgram.toLowerCase() === 'y'){
                     exit = true;
@@ -79,7 +78,7 @@ while (!exit){
 
 
 
-            function printRootSorted(){
+            function printRootSorted(){// print the first level sons under folder sorted way
                 console.log(path);
                 var foldersArr = [];
                 var filesArr = [];
@@ -110,9 +109,9 @@ while (!exit){
 
             }
 
-            function changeDirectory(){
-                var userInput = readlineSync.question("Where would you like to go?");
-                if(userInput === '..'){
+            function changeDirectory(){// move backward or forward from current directory
+                var goTo = readlineSync.question("Where would you like to go?()");
+                if(goTo === '..'){//backward case
                     if(uniqueID > 0){
                         uniqueID = storage[uniqueID][1];
                         var name =  storage[uniqueID][2];
@@ -120,16 +119,16 @@ while (!exit){
                         console.log(path);
                         level--;
 
-                    }else{
+                    }else{// edge case of root folder
                         console.log("You are in the root , no where to go back");
                     }
-                }else if(!checkIfFolderExist(userInput)) {
-                    console.log("No directory called " + userInput);
+                }else if(!checkIfFolderExist(goTo)) {
+                    console.log("No directory called " + goTo);
                 }
 
             }
 
-            function checkIfFolderExist(folderName) {
+            function checkIfFolderExist(folderName) {//help function in order to check whether user input of folder is exist
                 for(var i = 0 ; i < storage.length ; i++){
                    if(folderName === storage[i][2] && uniqueID === storage[i][1]){
                        path += "/" + folderName;
@@ -142,7 +141,7 @@ while (!exit){
                 return false;
             }
 
-            function isFolder(id){// check if the needed to open is file or folder
+            function isFolder(id){// check if the needed to open is file or folder, (help function)
 
                 if(storage[id].length === 3){
                     return true;
@@ -150,7 +149,7 @@ while (!exit){
                 return false;
             }
 
-            function openFile(){
+            function openFile(){// show content of a file if exist
                 var file = readlineSync.question("Which file would you like to open?");
                 file = file.toLowerCase();
                 if (isExist(file) ){
@@ -174,7 +173,7 @@ while (!exit){
                 return false;
             }
 
-            function getIndex(name) {
+            function getIndex(name) {//return the uniqueID of specific file
                 for(var i = 0 ; i < storage.length ; i++){
                     if(name === storage[i][2] && uniqueID === storage[i][1]){
                        return storage[i][0];
@@ -213,32 +212,27 @@ while (!exit){
                     console.log(storage[id][2] + " deleted.");
                     storage.splice(id, 1);
                 }else{                                                        // Folder to delete
-                    // לבנות מחסנית (מערך ממומש פופ ופוש) של כל הבנים
-                    var stackToDelete = [];
+                    //
+                    var stackToDelete = [];//stack that will hold all files need to be deleted
                     for(var i = 1; i <storage.length; i++){
                         if (id === storage[i][1]){
                             stackToDelete.push(storage[i][0]);
                         }
                     }
-                    // לבדוק אם ריקה
+
                     if(stackToDelete.length === 0){
-                        // אם כן למחוק אותה
                         console.log(storage[id][2] + " deleted.");
                         storage.splice(id, 1);
-                    }else {   // אם לא
-                        // לרוץ על המחסנית כל עוד היא לא ריקה
+                    }else {
+
                         while (stackToDelete.length > 0){
-                            //  לקרוא שוב לפונקציה הזאת (רקורסיה) כל פעם עם הערך ID של הקובץ שבמחסנית
-                            deleteId(stackToDelete.pop());
+
+                            deleteId(stackToDelete.pop()); //recursion call with the id on top of stack
                         }
                         console.log(storage[id][2] + " deleted.");
                         storage.splice(id, 1);
                     }
 
-
-
-
-                    // כך שבכל איטרציה מתבצע קריאה לפונקציה עם הערך ID של המערך pop
 
                 }
             }
