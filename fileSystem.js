@@ -2,6 +2,7 @@
  * Created by Boaz on 19/01/2017.
  */
 const readlineSync = require('readline-sync');
+const colors = require('colors');
 var exit = false;//global variable to control the exit command
 var uniqueID = 0;// an ID of each file in the storage
 var path = 'root >';
@@ -30,14 +31,14 @@ var menu = [//user menu
     ' Exit(suit yourself out from the program)'
 ];
 
-    console.log(path);
+    console.log(colors.red(path));
 while (!exit){
 
         showMenu();
 }
 
             function showMenu() {
-                var userMenuInput = readlineSync.keyInSelect(menu, 'Chose your menu option(1 to 6):');
+                var userMenuInput = readlineSync.keyInSelect(menu, colors.red('Chose your menu option:'));
                 userMenuInput++;
                 switch (userMenuInput){//calling functions according to user menu input
                     case 1 :
@@ -61,17 +62,17 @@ while (!exit){
                         break;
 
                     default:
-                        console.log("What is wrong with you?? chose menu item between 1 to 6");
+                        console.log(colors.red("What is wrong with you?? chose menu item between 1 to 6"));
 
                 }
             }
 
             function exitProgram() {// exit the program safely using the process object
-                var exitProgram = readlineSync.question("Are you sure you want to exit? (y / n)");
+                var exitProgram = readlineSync.question(colors.red("Are you sure you want to exit? (y / n)"));
                 if(exitProgram.toLowerCase() === 'y'){
                     exit = true;
                     process.exit();
-                }else if(exitProgram.toLowerCase() === 'n' ){
+                } else if(exitProgram.toLowerCase() === 'n' ) {
                     showMenu();
                 }
             }
@@ -96,21 +97,19 @@ while (!exit){
                 foldersArr.sort();
                 filesArr.sort();
                 for(var j = 0; j<foldersArr.length ; j++){
-                    console.log(" " +foldersArr[j]);
+                    console.log(colors.blue(" " +foldersArr[j]));
                 }
 
                 for(var k = 0; k<filesArr.length ; k++){
-                    console.log("    " +filesArr[k]);
+                    console.log(colors.yellow("    " +filesArr[k]));
                 }
 
                 console.log("number of files: " + (filesArr.length+foldersArr.length)+".");
 
-
-
             }
 
             function changeDirectory(){// move backward or forward from current directory
-                var goTo = readlineSync.question("Where would you like to go?()");
+                var goTo = readlineSync.question(colors.red("Where would you like to go?"));
                 if(goTo === '..'){//backward case
                     if(uniqueID > 0){
                         uniqueID = storage[uniqueID][1];
@@ -119,11 +118,11 @@ while (!exit){
                         console.log(path);
                         level--;
 
-                    }else{// edge case of root folder
-                        console.log("You are in the root , no where to go back");
+                    } else {// check if the current location is the root folder
+                        console.log(colors.red("You are in the root , no where to go back"));
                     }
-                }else if(!checkIfFolderExist(goTo)) {
-                    console.log("No directory called " + goTo);
+                } else if(!checkIfFolderExist(goTo)) {
+                    console.log(colors.red("No directory called " + goTo));
                 }
 
             }
@@ -150,15 +149,15 @@ while (!exit){
             }
 
             function openFile(){// show content of a file if exist
-                var file = readlineSync.question("Which file would you like to open?");
+                var file = readlineSync.question(colors.red("Which file would you like to open?"));
                 file = file.toLowerCase();
                 if (isExist(file) ){
                     if(isFolder(getIndex(file))){
-                        console.log("File not to be found");
-                    }else{
-                        console.log(storage[getIndex(file)][3]);
+                        console.log(colors.red("File not to be found"));
+                    } else {
+                        console.log(colors.red(storage[getIndex(file)][3]));
                     }
-                }else {
+                } else {
                     console.log("File not to be found.");
                 }
             }
@@ -183,35 +182,35 @@ while (!exit){
             }
 
             function createNewFile(){
-                var fileToCreate = readlineSync.question("Please name the file you want to create:");
+                var fileToCreate = readlineSync.question(colors.red("Please name the file you want to create:"));
                 fileToCreate = fileToCreate.toLowerCase();
                 if(!isExist(fileToCreate)){
                     if(fileToCreate.indexOf(".") > -1){
-                        var content = readlineSync.question("what content would you like to enter to your file?");
+                        var content = readlineSync.question(colors.red("what content would you like to enter to your file?"));
                         storage.push([storage.length, uniqueID, fileToCreate, content]);
-                    }else {
+                    } else {
                         storage.push([storage.length, uniqueID, fileToCreate]);
                     }
-                }else{
-                    console.log(fileToCreate +" is already exist under the current folder.")
+                } else {
+                    console.log(colors.red(fileToCreate +" is already exist under the current folder."))
                 }
             }
 
             function deleteFile(){
-                var fileToDelete = readlineSync.question("Which file would you like to delete?");
+                var fileToDelete = readlineSync.question(colors.red("Which file would you like to delete?"));
                 fileToDelete = fileToDelete.toLowerCase();
                 if(isExist(fileToDelete)){
                   deleteId(getIndex(fileToDelete));
-                }else {
-                    console.log(fileToDelete + " dosen't exit under the current folder");
+                } else {
+                    console.log(colors.red(fileToDelete + " dosen't exit under the current folder"));
                 }
             }
 
             function deleteId(id) {
                 if(!isFolder(id)){                        // File to delete
-                    console.log(storage[id][2] + " deleted.");
+                    console.log(colors.red(storage[id][2] + " deleted."));
                     storage.splice(id, 1);
-                }else{                                                        // Folder to delete
+                } else {                                                        // Folder to delete
                     //
                     var stackToDelete = [];//stack that will hold all files need to be deleted
                     for(var i = 1; i <storage.length; i++){
@@ -221,15 +220,15 @@ while (!exit){
                     }
 
                     if(stackToDelete.length === 0){
-                        console.log(storage[id][2] + " deleted.");
+                        console.log(colors.red(storage[id][2] + " deleted."));
                         storage.splice(id, 1);
-                    }else {
+                    } else {
 
                         while (stackToDelete.length > 0){
 
                             deleteId(stackToDelete.pop()); //recursion call with the id on top of stack
                         }
-                        console.log(storage[id][2] + " deleted.");
+                        console.log(colors.red(storage[id][2] + " deleted."));
                         storage.splice(id, 1);
                     }
 

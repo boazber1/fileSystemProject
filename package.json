@@ -1,12 +1,10 @@
 {
   "name": "filesystem",
   "version": "1.0.0",
-  "description": "",
   "main": "fileSystem.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node filesystem"
-
   },
   "repository": {
     "type": "git",
@@ -19,6 +17,9 @@
   },
   "homepage": "https://github.com/boazber1/fileSystemProject#readme",
   "dependencies": {
+    "colors": "^1.1.2",
     "readline-sync": "^1.4.5"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }
